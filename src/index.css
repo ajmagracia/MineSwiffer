@@ -1,0 +1,21 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  text-align: center;
+  flex-shrink: 0;
+  background-color: #44aaff;
+}
+
+#root {
+  flex: 1 0 auto;
+}

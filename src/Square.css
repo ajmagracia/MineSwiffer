@@ -1,0 +1,12 @@
+.square {
+  display: flex;
+  height: 40px;
+  width: 40px;
+  background-color: #666;
+  border: 2px outset #666;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle {}
