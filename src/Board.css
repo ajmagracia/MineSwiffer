@@ -1,8 +1,8 @@
 .game-board {
   display: flex;
   flex-wrap: wrap;
-  width: 660px;
-  height: 660px;
-  border: 1px solid black;
+  width: 690px;
+  height: 690px;
+  border: 2px ridge #111;
   transform: scale(.8);
 }

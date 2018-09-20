@@ -8,7 +8,7 @@ class Board extends Component {
     this.state = {
       grid: []
     }
-    this._createGrid( {
+    this.state.grid = this._createGrid( {
       rowLength: 15,
       columnLength: 15
     } )
@@ -85,7 +85,7 @@ class Board extends Component {
         }
       }
     }
-    this.state.grid = grid
+    return grid
   }
   /*
   create an array of numbers from 1 to rowLength * columnLength

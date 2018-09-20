@@ -1,31 +1,61 @@
 import React, { Component } from 'react'
 import './Square.css'
 
-var bombStatus
 class Square extends Component {
   constructor(props){
     super(props)
     this.state = {
-      bomb: ""
+      bomb: "",
+      clicked: false,
+      rightClicked: false,
+      color: '#666',
+      border: 'outset'
     }
   }
 
-  componentWillMount(){
-    bombStatus=1
-  }
   render(){
     return(
-      <div className="square" onClick={this.handleClick}>{this.props.bomb}</div>
+      <div className="wrapper">
+        <div className="square" style={{background:this.state.color, borderColor: this.state.color, borderStyle:this.state.border}} onClick={this.handleClick} onContextMenu={this.handleRightClick}>
+          {this.props.bomb}
+        </div>
+      </div>
     )
   }
 
-  handleClick = (e) => {
-    let { bomb } = this.props.bomb
-    e.target.classList.add('circle')
-    if (bomb===0)
-      bomb = ""
-    this.setState({
-      bomb
+  handleClick = ( e ) => {
+    let { clicked, color } = this.state
+    if ( clicked ) return
+    let { bomb } = this.props
+
+    if ( bomb === 'B' ) {
+      e.target.innerHTML = '<div class="burst-8"></div>'
+      color = 'red'
+    } else {
+      color = '#333'
+    }
+    this.setState( {
+      clicked: !clicked,
+      border: 'groove',
+      color
+    } )
+  }
+
+  handleRightClick = (e) => {
+    e.preventDefault()
+    let { rightClicked, clicked } = this.state
+    if ( clicked ) return
+    if ( !rightClicked ) {
+      e.target.innerHTML = '<div class="unselectable"></div>'
+      e.target.children[0].classList.add('flag')
+      // Not sure how else to prevent errors when clicking directly on flag
+    } else if (e.target.classList.contains('flag')) {
+        e.target.classList.remove('flag')
+    } else {
+      e.target.children[0].classList.remove('flag')
+    }
+    this.setState( {
+      rightClicked: !rightClicked
     })
   }
 }
