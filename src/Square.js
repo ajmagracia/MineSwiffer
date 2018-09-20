@@ -9,14 +9,16 @@ class Square extends Component {
       clicked: false,
       rightClicked: false,
       color: '#666',
-      border: 'outset'
+      border: 'outset',
+      borderColor: '#666'
     }
   }
 
   render(){
+    let { color, border, borderColor } = this.state
     return(
       <div className="wrapper">
-        <div className="square" style={{background:this.state.color, borderColor: this.state.color, borderStyle:this.state.border}} onClick={this.handleClick} onContextMenu={this.handleRightClick}>
+        <div className="square" style={{background:this.state.color, borderColor: this.state.borderColor, borderStyle:this.state.border}} onClick={this.handleClick} onContextMenu={this.handleRightClick}>
           {this.props.bomb}
         </div>
       </div>
@@ -24,19 +26,21 @@ class Square extends Component {
   }
 
   handleClick = ( e ) => {
-    let { clicked, color } = this.state
+    let { clicked, color, borderColor } = this.state
     if ( clicked ) return
     let { bomb } = this.props
 
     if ( bomb === 'B' ) {
       e.target.innerHTML = '<div class="burst-8"></div>'
-      color = 'red'
+      color = '#F00'
     } else {
       color = '#333'
     }
+    borderColor = '#333'
     this.setState( {
       clicked: !clicked,
       border: 'groove',
+      borderColor,
       color
     } )
   }
