@@ -6,6 +6,7 @@ class Board extends Component {
   constructor(props){
     super(props)
     this.state = {
+      playing: true,
       grid: []
     }
     this.state.grid = this._createGrid( {
@@ -15,14 +16,17 @@ class Board extends Component {
   }
 
   render() {
-    let { grid } = this.state
+    let { grid, playing } = this.state
     let board = grid.map( ( row, rowIndex ) => {
       return row.map( ( column, columnIndex ) => {
         return <Square
         key={rowIndex + ', ' + columnIndex}
         row={rowIndex}
         column={columnIndex}
-        bomb={grid[rowIndex][columnIndex]}/>
+        bomb={grid[rowIndex][columnIndex]}
+        playing={playing}
+        endGame={this.endGame}
+        />
       } )
     } )
     return (
@@ -127,6 +131,10 @@ class Board extends Component {
       */
     }
     return bombNumbers
+  }
+
+  endGame = (playing) => {
+    this.setState( { playing } )
   }
 
   setBombs = () => {

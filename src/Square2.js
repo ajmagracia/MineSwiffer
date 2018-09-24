@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import './Square.css'
 
-class Square extends Component {
+class Square2 extends Component {
   constructor(props){
     super(props)
     this.state = {
-      // bomb: "",
       clicked: false,
       rightClicked: false,
-      color: '#666',
-      border: 'outset',
-      borderColor: '#666'
     }
   }
 
@@ -29,12 +25,6 @@ class Square extends Component {
     let { clicked, color, borderColor } = this.state
     let { bomb, endGame, playing } = this.props
     if ( clicked ) return
-
-    // if (e.target.classList.contains('flag')) {
-    //     e.target.classList.remove('flag')
-    // } else {
-    //   e.target.children[0].classList.remove('flag')
-    // }
 
     if ( bomb === 'B' ) {
       e.target.innerHTML = '<div class="burst-8"></div>'
@@ -74,4 +64,4 @@ class Square extends Component {
   }
 }
 
-export default Square
+export default Square2
