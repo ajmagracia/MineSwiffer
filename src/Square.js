@@ -41,9 +41,9 @@ class Square extends Component {
       color = '#F00'
       playing = !playing
     } else {
-      color = '#333'
+      color = '#444'
     }
-    borderColor = '#333'
+    borderColor = '#444'
 
 
 
