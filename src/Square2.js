@@ -11,7 +11,6 @@ class Square2 extends Component {
   }
 
   render(){
-    let { color, border, borderColor } = this.state
     return(
       <div className="wrapper">
         <div className="square" style={{background:this.state.color, borderColor: this.state.borderColor, borderStyle:this.state.border}} onClick={this.handleClick} onContextMenu={this.handleRightClick}>

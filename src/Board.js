@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Square from './Square'
 import './Board.css'
 
+// This will create a board containing a grid of Squares
 class Board extends Component {
   constructor(props){
     super(props)
@@ -36,8 +37,9 @@ class Board extends Component {
 
   // create a grid of dimensions rowLength x columnLength with bombs
   _createGrid = ( { rowLength, columnLength } ) => {
+    let { createArray } = this
     let squares = rowLength * columnLength
-    let numbers = this.createArray(squares)
+    let numbers = createArray(squares)
     let bombNumbers = this.createBombNumbers(squares,numbers)
 
     // turn the bomb numbers into coordinates on grid
@@ -57,8 +59,8 @@ class Board extends Component {
     // }
 
     // Figured it out... Is mapping even better? The code is bulkier...
-    let row = this.createArray( rowLength, 0)
-    let columnSlots = this.createArray( columnLength, 0)
+    let row = createArray( rowLength, 0)
+    let columnSlots = createArray( columnLength, 0)
     // Spread operator to *duplicate* code
     let grid = columnSlots.map( slot => ( [ ...row ] ) )
 
@@ -104,13 +106,17 @@ class Board extends Component {
   //   return numbers
   // }
 
+  // createArray = (size, item) => {
+  //   let array = []
+  //   for (let i = 0; i<size; i++) {
+  //     let thing = item === undefined ? i : item
+  //     array.push(thing)
+  //   }
+  //   return array
+  // }
+
   createArray = (size, item) => {
-    let array = []
-    for (let i = 0; i<size; i++) {
-      let thing = item === undefined ? i : item
-      array.push(thing)
-    }
-    return array
+    return Array.from ({length: size}, (x, i) => {return item === undefined ? i : item})
   }
 
   createBombNumbers = (maxNumber, numberList) => {
