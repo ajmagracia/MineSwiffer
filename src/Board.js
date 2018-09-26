@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Square from './Square'
+import Square from './Square2'
 import './Board.css'
 
 // This will create a board containing a grid of Squares

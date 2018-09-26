@@ -2,7 +2,7 @@
   display: flex;
   height: 40px;
   width: 40px;
-  border: 3px outset #666;
+  border-width: 3px;
   position: relative;
   align-items: center;
   justify-content: center;
@@ -10,17 +10,20 @@
   overflow: hidden;
 }
 
-.red-square {
-  background: red;
-  display: flex;
-  height: 40px;
-  width: 40px;
-  border: 2px outset #666;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  overflow: hidden
+.unclicked {
+  border-color: #666;
+  border-style: outset;
+  background-color: #666;
+}
+
+.clicked {
+  border-color: #444;
+  border-style: groove;
+  background-color: #444;
+}
+
+.B {
+  background-color: #F00;
 }
 
 .burst-8 {
@@ -29,6 +32,7 @@
   height: 25px;
   position: relative;
   text-align: center;
+  margin-left: -1px;
   -webkit-transform: rotate(20deg);
   -moz-transform: rotate(20deg);
   -ms-transform: rotate(20deg);
@@ -66,6 +70,7 @@
   background: black;
   position: relative;
   user-select: none;
+  margin-left: -4px;
 }
 
 .flag:before {
