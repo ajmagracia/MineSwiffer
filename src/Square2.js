@@ -9,7 +9,17 @@ class Square2 extends Component {
       rightClicked: false,
       rightClickCounter: 0,
     }
-    this.clickDiv = React.createRef()
+    if (this.props.bomb === 'B' || this.props.bomb == 0)
+      this.clickDiv = React.createRef()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.playing === false && prevProps.playing === true){
+      if (this.props.bomb === 'B'){
+        console.log('click')
+        this.simulateBombClick()
+      }
+    }
   }
 
   render(){
@@ -78,10 +88,10 @@ class Square2 extends Component {
       endGame,
       playing
     } = this.props
-    if (clickStatus === 'clicked' || playing === false) return
+    if (clickStatus === 'clicked' || playing === false && bomb !== 'B') return
 
     if (bomb === 'B') {
-      playing = !playing
+      playing = false
     }
 
     this.setState({
@@ -105,8 +115,12 @@ class Square2 extends Component {
     })
   }
 
-  // simulateClick = ()
-
+  simulateBombClick = () => {
+    // let { playing, bomb } = this.props
+    // if (playing === false)
+    // if(this.clickDiv)
+    this.clickDiv.current.click()
+  }
 }
 
 export default Square2
