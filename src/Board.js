@@ -143,7 +143,7 @@ class Board extends Component {
     this.setState( { playing } )
   }
 
-  setBombs = () => {
+  reset = () => {
 
   }
 

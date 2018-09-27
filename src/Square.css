@@ -11,15 +11,15 @@
 }
 
 .unclicked {
-  border-color: #666;
+  border-color: #444;
   border-style: outset;
   background-color: #666;
 }
 
 .clicked {
   border-color: #444;
-  border-style: groove;
-  background-color: #444;
+  border-style: ridge;
+  background-color: #505050;
 }
 
 .B {

@@ -37,3 +37,14 @@ Square:
     0:
       No content
       Clicks adjacent 0s (not diagonals)
+
+
+ICEBOX: Each number has its own text color
+
+
+
+When a bomb is clicked:
+All other bombs should be clicked:
+
+Find other bombs,
+click the bombs
