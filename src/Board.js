@@ -8,7 +8,10 @@ class Board extends Component {
     super(props)
     this.state = {
       playing: true,
-      grid: []
+      grid: [],
+      lastRow: 0,
+      lastColumn: 0,
+      lastContent: 0
     }
     this.state.grid = this._createGrid( {
       rowLength: 15,
@@ -17,16 +20,19 @@ class Board extends Component {
   }
 
   render() {
-    let { grid, playing } = this.state
+    let { grid, playing, lastRow, lastColumn, lastContent } = this.state
     let board = grid.map( ( row, rowIndex ) => {
       return row.map( ( column, columnIndex ) => {
         return <Square
         key={rowIndex + ', ' + columnIndex}
         row={rowIndex}
         column={columnIndex}
+        lastRow={lastRow}
+        lastColumn={lastColumn}
+        lastContent={lastContent}
         bomb={grid[rowIndex][columnIndex]}
         playing={playing}
-        endGame={this.endGame}
+        progressGame={this.progressGame}
         />
       } )
     } )
@@ -139,8 +145,38 @@ class Board extends Component {
     return bombNumbers
   }
 
-  endGame = (playing) => {
-    this.setState( { playing } )
+  // progressGame = (row, column, bomb, playing) => {
+  //   this.setState( {
+  //     playing,
+  //     lastRow: row,
+  //     lastColumn: column,
+  //     lastContent: bomb
+  //  } )
+  // }
+  progressGame = (row, column, bomb, playing) => {
+    let {grid} = this.state
+    if (bomb < 1) {
+      if (row !== 0){
+        if ( grid[ row - 1 ][ column ] === 0 )
+          grid[ row - 1 ][ column ] = -1
+      }
+      if (row !== 14){
+        if ( grid[ row + 1 ][ column ] === 0 )
+          grid[ row + 1 ][ column ] = -1
+      }
+      if (column !== 0){
+        if ( grid[ row ][ column - 1 ] === 0 )
+        grid[ row ][ column - 1 ] = -1
+      }
+      if (column !== 14){
+        if ( grid[ row ][ column + 1 ] === 0 )
+          grid[ row ][ column + 1 ] = -1
+      }
+    }
+    this.setState( {
+      playing,
+      grid
+   } )
   }
 
   reset = () => {

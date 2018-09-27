@@ -9,16 +9,26 @@ class Square2 extends Component {
       rightClicked: false,
       rightClickCounter: 0,
     }
-    if (this.props.bomb === 'B' || this.props.bomb == 0)
-      this.clickDiv = React.createRef()
+    this.clickDiv = React.createRef()
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.playing === false && prevProps.playing === true){
-      if (this.props.bomb === 'B'){
+    let {
+      playing,
+      bomb,
+      lastRow,
+      lastColumn,
+      lastContent,
+      row,
+      column
+    } = this.props
+    if (playing === false && prevProps.playing === true){
+      if (bomb === 'B'){
         console.log('click')
         this.simulateBombClick()
       }
+    } else if ( this.props.bomb === -1 ) {
+      this.simulateBombClick()
     }
   }
 
@@ -46,7 +56,7 @@ class Square2 extends Component {
     content = this.props.bomb
     if (this.props.bomb === 'B') {
       innerDiv = < div className = "burst-8" > < /div>
-    } else if (this.props.bomb == 0) {
+    } else if (this.props.bomb < 1) {
       innerDiv = < div className = "unselectable" > </div>
     } else {
       innerDiv = < div className = "unselectable" > {this.props.bomb} </div>
@@ -80,15 +90,16 @@ class Square2 extends Component {
 
   handleClick = (e) => {
     let {
-      clickStatus,
-      rightClicked
+      clickStatus
     } = this.state
     let {
       bomb,
-      endGame,
-      playing
+      progressGame,
+      playing,
+      row,
+      column
     } = this.props
-    if (clickStatus === 'clicked' || playing === false && bomb !== 'B') return
+    if (clickStatus === 'clicked' || (playing === false && bomb !== 'B')) return
 
     if (bomb === 'B') {
       playing = false
@@ -97,13 +108,12 @@ class Square2 extends Component {
     this.setState({
       clickStatus: 'clicked',
       rightClicked: false
-    }, endGame(playing))
+    }, progressGame(row, column, bomb, playing))
   }
 
   handleRightClick = (e) => {
     e.preventDefault()
     let {
-      rightClicked,
       clickStatus,
       rightClickCounter
     } = this.state
