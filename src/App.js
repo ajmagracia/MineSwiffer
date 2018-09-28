@@ -6,10 +6,15 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Board />
+        <Board stopTimer={this.stopTimer}/>
       </div>
     );
   }
+
+  stopTimer = () => {
+
+  }
+
 }
 
 export default App;

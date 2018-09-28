@@ -9,10 +9,11 @@ square = this HTML
 if not clicked
 square = that html
 
-then if you click, it will still set state to clicked, but the change will have
-already occurred, so the user won't see a difference
+When a bomb is clicked:
+All other bombs should be clicked:
 
-
+Find other bombs,
+click the bombs
 
 
 Square:
@@ -39,12 +40,17 @@ Square:
       Clicks adjacent 0s (not diagonals)
 
 
+0s to make adjacent 0s click
+Send its own value to board
+  store as last-clicked state
+Send last-clicked as props
+Compare its own location to props
+  If adjacent, click
+
+Change grid contents to an Array
+  0 index is the bomb/value
+  1 index is whether or not it needs to click itself
+
+
+
 ICEBOX: Each number has its own text color
-
-
-
-When a bomb is clicked:
-All other bombs should be clicked:
-
-Find other bombs,
-click the bombs

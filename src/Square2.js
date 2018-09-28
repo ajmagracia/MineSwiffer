@@ -12,6 +12,22 @@ class Square2 extends Component {
     this.clickDiv = React.createRef()
   }
 
+  componentDidUpdate(prevProps) {
+    let {
+      playing,
+      bomb,
+      lastContent
+    } = this.props
+    if (playing === false && prevProps.playing === true && lastContent === 'B'){
+      if (bomb === 'B'){
+        console.log('click')
+        this.simulateBombClick()
+      }
+    } else if ( (typeof bomb === 'object' && bomb[1] === -1) || bomb === -1 ) {
+      this.simulateBombClick()
+    }
+  }
+
   render(){
     let content = this.createSquareHTML()
     return(
@@ -28,18 +44,19 @@ class Square2 extends Component {
     rightClicked,
     rightClickCounter
   } = this.state
+  let { bomb } = this.props
   let content
   let innerDiv
 
   // After a click
   if (clickStatus === 'clicked') {
-    content = this.props.bomb
-    if (this.props.bomb === 'B') {
+    content = bomb
+    if (bomb === 'B') {
       innerDiv = < div className = "burst-8" > < /div>
-    } else if (this.props.bomb == 0) {
+    } else if (typeof bomb === 'number') {
       innerDiv = < div className = "unselectable" > </div>
     } else {
-      innerDiv = < div className = "unselectable" > {this.props.bomb} </div>
+      innerDiv = < div className = "unselectable" > {bomb[0]} </div>
     }
   }
 
@@ -55,6 +72,9 @@ class Square2 extends Component {
     }
   }
 
+  // if (typeof bomb === 'object')
+  //   bomb = bomb[0]
+
   let squareHTML =
     <
      div
@@ -63,37 +83,38 @@ class Square2 extends Component {
      ref = { this.clickDiv }
      onContextMenu = { this.handleRightClick }
     >
-      { innerDiv === undefined ? this.props.bomb : innerDiv }
+      { innerDiv === undefined ? bomb : innerDiv }
     </div>
   return squareHTML
 }
 
   handleClick = (e) => {
     let {
-      clickStatus,
-      rightClicked
+      clickStatus
     } = this.state
     let {
       bomb,
-      endGame,
-      playing
+      progressGame,
+      playing,
+      row,
+      column,
+      counter
     } = this.props
-    if (clickStatus === 'clicked' || playing === false) return
+    if (clickStatus === 'clicked' || (playing === false && bomb !== 'B') || counter === 1000000) return
 
     if (bomb === 'B') {
-      playing = !playing
+      playing = false
     }
 
     this.setState({
       clickStatus: 'clicked',
       rightClicked: false
-    }, endGame(playing))
+    }, progressGame(row, column, bomb, playing))
   }
 
   handleRightClick = (e) => {
     e.preventDefault()
     let {
-      rightClicked,
       clickStatus,
       rightClickCounter
     } = this.state
@@ -105,8 +126,12 @@ class Square2 extends Component {
     })
   }
 
-  // simulateClick = ()
-
+  simulateBombClick = () => {
+    // let { playing, bomb } = this.props
+    // if (playing === false)
+    // if(this.clickDiv)
+    this.clickDiv.current.click()
+  }
 }
 
 export default Square2

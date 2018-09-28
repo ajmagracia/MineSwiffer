@@ -8,7 +8,9 @@ class Board extends Component {
     super(props)
     this.state = {
       playing: true,
-      grid: []
+      grid: [],
+      lastContent: 0,
+      counter: []
     }
     this.state.grid = this._createGrid( {
       rowLength: 15,
@@ -16,17 +18,30 @@ class Board extends Component {
     } )
   }
 
+  componentDidUpdate() {
+    if (this.state.counter.length === 210 && this.state.playing === true) {
+      this.setState( {
+        playing: false,
+        counter: 1000000
+      })
+    } else if (this.props.counter === 1000000) {
+      this.props.stopTimer()
+    }
+  }
+
   render() {
-    let { grid, playing } = this.state
+    let { grid, playing, lastContent, counter } = this.state
     let board = grid.map( ( row, rowIndex ) => {
       return row.map( ( column, columnIndex ) => {
         return <Square
         key={rowIndex + ', ' + columnIndex}
         row={rowIndex}
         column={columnIndex}
+        counter={counter}
+        lastContent={lastContent}
         bomb={grid[rowIndex][columnIndex]}
         playing={playing}
-        endGame={this.endGame}
+        progressGame={this.progressGame}
         />
       } )
     } )
@@ -84,13 +99,19 @@ class Board extends Component {
           for ( let h = -1; h <= 1; h++ ) {
             let [ y, x ] = [ v + i, h + j ]
             if ( typeof grid[ y ] !== 'undefined' ) {
-              if ( typeof grid[ y ][ x ] === 'number' )
-                grid[ y ][ x ] += 1
+              if ( typeof grid[ y ][ x ] === 'number' ){
+                if ( grid[ y ][ x ] === 0 ){
+                  grid[ y ][ x ] = [1]
+                }
+              } else if ( typeof grid[ y ][ x ] === 'object'){
+                grid[ y ][ x ][0] += 1
+              }
             }
           }
         }
       }
     }
+    console.log(grid)
     return grid
   }
   /*
@@ -139,8 +160,55 @@ class Board extends Component {
     return bombNumbers
   }
 
-  endGame = (playing) => {
-    this.setState( { playing } )
+  // progressGame = (row, column, bomb, playing) => {
+  //   this.setState( {
+  //     playing,
+  //     lastRow: row,
+  //     lastColumn: column,
+  //     lastContent: bomb
+  //  } )
+  // }
+  progressGame = (row, column, bomb, playing) => {
+    let {grid, counter} = this.state
+    if (bomb < 1) {
+      if ( grid[ row ][ column ] < 1 ){
+        if (row !== 0){
+          if ( grid[ row - 1 ][ column ][0] ){
+            grid[ row - 1 ][ column ].push(-1)
+          } else {
+            grid[ row - 1 ][ column ] = -1
+          }
+        }
+        if (row !== 14){
+          if ( grid[ row + 1 ][ column ][0] ){
+            grid[ row + 1 ][ column ].push(-1)
+          } else {
+            grid[ row + 1 ][ column ] = -1
+          }
+        }
+        if (column !== 0){
+          if ( grid[ row ][ column - 1 ][0] ){
+            grid[ row ][ column - 1 ].push(-1)
+          } else {
+            grid[ row ][ column - 1 ] = -1
+          }
+        }
+        if (column !== 14){
+          if ( grid[ row ][ column + 1 ][0] ){
+            grid[ row ][ column + 1 ].push(-1)
+          } else {
+            grid[ row ][ column + 1 ] = -1
+          }
+        }
+      }
+    }
+    counter.push("")
+    this.setState( {
+      playing,
+      grid,
+      counter,
+      lastContent: bomb
+   } )
   }
 
   reset = () => {
