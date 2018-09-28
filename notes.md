@@ -47,5 +47,10 @@ Send last-clicked as props
 Compare its own location to props
   If adjacent, click
 
+Change grid contents to an Array
+  0 index is the bomb/value
+  1 index is whether or not it needs to click itself
+
+
 
 ICEBOX: Each number has its own text color
