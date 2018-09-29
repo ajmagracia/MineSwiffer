@@ -20,17 +20,21 @@ class Board extends Component {
 
   componentDidUpdate() {
     if (this.state.counter.length === 210 && this.state.playing === true) {
+      this.props.stop()
       this.setState( {
         playing: false,
         counter: 1000000
       })
-    } else if (this.props.counter === 1000000) {
-      this.props.stopTimer()
     }
   }
 
   render() {
     let { grid, playing, lastContent, counter } = this.state
+    let {
+      stop,
+      start,
+      reset
+    } = this.props
     let board = grid.map( ( row, rowIndex ) => {
       return row.map( ( column, columnIndex ) => {
         return <Square
@@ -41,6 +45,9 @@ class Board extends Component {
         lastContent={lastContent}
         bomb={grid[rowIndex][columnIndex]}
         playing={playing}
+        start={start}
+        stop={stop}
+        reset={reset}
         progressGame={this.progressGame}
         />
       } )

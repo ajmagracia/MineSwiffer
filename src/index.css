@@ -10,7 +10,7 @@ body {
   flex-direction: column;
 }
 
-footer {
+footer, header {
   text-align: center;
   flex-shrink: 0;
   background-color: #44aaff;

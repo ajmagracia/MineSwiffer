@@ -1,7 +1,9 @@
 .App {
   display: flex;
   text-align: center;
+  align-items: center;
   justify-content: center;
+  flex-flow:column;
 }
 
 .App-logo {
@@ -22,6 +24,14 @@
 
 .App-intro {
   font-size: large;
+}
+
+.Timer {
+  margin: 35px auto -35px auto;
+  font-family: 'Share Tech Mono', monospace;
+  /* font-family: 'Cute Font', cursive;
+  font-family: 'Wallpoet', cursive;
+  font-family: 'Roboto Mono', monospace; */
 }
 
 @keyframes App-logo-spin {

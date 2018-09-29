@@ -98,12 +98,16 @@ class Square2 extends Component {
       playing,
       row,
       column,
-      counter
+      counter,
+      start,
+      stop
     } = this.props
     if (clickStatus === 'clicked' || (playing === false && bomb !== 'B') || counter === 1000000) return
-
+    if (counter.length===0)
+      start()
     if (bomb === 'B') {
       playing = false
+      stop()
     }
 
     this.setState({
