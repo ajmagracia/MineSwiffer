@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import './Square.css';
 
-type Bomb = 0 | 'B' | number[];
+type BombNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | -1;
+export type Bomb = 0 | -1 | 'B' | BombNumber[];
 
 type Props = {
   board: Component,
