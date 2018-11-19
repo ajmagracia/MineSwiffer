@@ -1,8 +1,76 @@
 {
+  "parser": "babel-eslint",
   "extends": [
     "airbnb",
     "prettier",
+    "prettier/flowtype",
     "prettier/react"
   ],
-  "plugins": ["prettier"]
+  "plugins": ["flowtype", "prettier"],
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    }
+  },
+
+  "rules": {
+    "prettier/prettier": ["error"],
+    "linebreak-style": 0,
+    "prefer-destructuring": ["error", {
+      "VariableDeclarator": {
+        "array": false,
+        "object": false
+      },
+      "AssignmentExpression": {
+        "array": false,
+        "object": false
+      }
+    }, {
+      "enforceForRenamedProperties": false
+    }],
+
+    "import/no-unresolved": 0,
+    "import/extensions": 1,
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/destructuring-assignment": [0, "always", { "ignoreClassFields": true }],
+    "react/sort-comp": [
+      1,
+      {
+        "order": [
+          "static-methods",
+          "type-annotations",
+          "lifecycle",
+          "/^diplay.+$/",
+          "everything-else",
+          "render"
+        ]
+      }
+    ],
+    "react/sort-prop-types": ["error"],
+    "react/jsx-sort-props": [1, {
+      //      "reservedFirst": true,
+      //      "shorthandFirst": true
+    }],
+    "react/forbid-prop-types": 1,
+    "react/no-unused-prop-types": [1, {}],
+    "react/no-unescaped-entities": [2, {"forbid": [">", "}", "\\"]}],
+    "react/no-access-state-in-setstate": 1,
+    "react/prefer-stateless-function": 1,
+
+    "jsx-a11y/mouse-events-have-key-events": 1,
+    "jsx-a11y/click-events-have-key-events": 1,
+    "jsx-a11y/no-noninteractive-tabindex": 1,
+    "jsx-a11y/anchor-is-valid": 1,
+
+    "no-plusplus": [1, { "allowForLoopAfterthoughts": true }]
+  }
 }
