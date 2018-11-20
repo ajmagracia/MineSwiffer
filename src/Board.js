@@ -211,8 +211,6 @@ class Board extends Component {
       return 'HAHAHAHAHAHAHAHAHAHAHAHAHAHA';
     if (length > 200 && playing === false)
       return 'All that work for nothing...';
-    if (length === 40 && playing === false)
-      return "I'll, uh, pretend I didn't see that.";
     if (playing === false) return 'Darn.';
     if (length === 184) return 'Just... one... more...';
     if (length === 183) return "Praise Reese's you're gonna do it!!";

@@ -78,7 +78,7 @@ class Square2 extends Component {
         ref={this.clickDiv}
         role="presentation"
       >
-        {innerDiv === undefined ? bomb : innerDiv}
+        {innerDiv === undefined ? '' : innerDiv}
       </div>
     );
   };
