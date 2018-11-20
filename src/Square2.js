@@ -29,6 +29,7 @@ class Square2 extends Component {
     rightClickCounter: 0,
   };
 
+  // TODO: Refactor to not rely on bombClicked (use counter.join('') instead)
   componentDidUpdate() {
     const { bomb, bombClicked } = this.props;
     if (this.state.clickStatus === 'clicked') return;
@@ -96,7 +97,6 @@ class Square2 extends Component {
       start,
       stop,
     } = this.props;
-    let isPlaying = playing;
     if (!counter.length && bomb[0] === 'B') return reset(row, column);
     if (clickStatus === 'clicked')
       return this.props.checkAdjacentFlags(row, column);
@@ -104,12 +104,11 @@ class Square2 extends Component {
       return false;
     if (counter.length === 0) start();
     if (bomb[0] === 'B') {
-      isPlaying = false;
       stop();
     }
 
     return this.setState({ clickStatus: 'clicked', rightClicked: false }, () =>
-      progressGame(row, column, bomb, isPlaying),
+      progressGame(row, column, bomb),
     );
   };
 
