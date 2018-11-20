@@ -14,6 +14,8 @@ type NumberGenerator = (number, number[]) => number[];
 type Props = { reset: Function, start: Function, stop: Function };
 type Announcer = (''[], boolean) => string;
 
+const b = 'B';
+
 // Helpers
 const createArray: ArrayCreator = (size, item) =>
   Array.from({ length: size }, (x, i) => (item === undefined ? i : item));
@@ -63,7 +65,7 @@ const markAdjacentBombs: GridMarker = (unmarkedGrid) => {
     for (let j = 0; j < grid[i].length; j++) {
       // Guard clause: do not do anything unless we've found a bomb
       // eslint-disable-next-line no-continue
-      if (grid[i][j] !== 'B') continue;
+      if (grid[i][j][0] !== b) continue;
       /*
       start at the square 1 unit up and to the left and go top to bottom,
       left to right
@@ -73,7 +75,7 @@ const markAdjacentBombs: GridMarker = (unmarkedGrid) => {
           const [y, x] = [v + i, h + j];
           if (grid[y]) {
             if (grid[y][x] === 0) grid[y][x] = [1];
-            else if (typeof grid[y][x] === 'object') grid[y][x][0] += 1;
+            else if (grid[y][x] && grid[y][x][0] !== b) grid[y][x][0] += 1;
           }
         }
       }
@@ -94,20 +96,20 @@ const createBombGrid: GridCreator = (rowLength, colLength) => {
 
   // places a bomb in the appropriate squares
   bombCoordinates.forEach((coordinate) => {
-    grid[coordinate[0]][coordinate[1]] = 'B';
+    grid[coordinate[0]][coordinate[1]] = [b];
   });
 
   return markAdjacentBombs(grid);
 };
 
-// This will create a board containing a grid of Squares
+// -----------------------------------------------------------------------------
 class Board extends Component {
   props: Props;
 
   state = {
     playing: true,
     grid: createBombGrid(15, 15),
-    lastContent: 0,
+    bombClicked: false,
     counter: [],
   };
 
@@ -116,47 +118,87 @@ class Board extends Component {
       this.setGameWin();
   }
 
-  setNegativeOne = (row: number, col: number) => {
+  // TODO: Make functional
+  setNegativeOne = (row: number, col: number, exceptions: string[]) => {
     const { grid } = this.state;
+    if (exceptions && exceptions.includes(`${row}-${col}`)) return;
+    if (grid[row][col][1]) return;
     if (grid[row][col][0]) grid[row][col].push(-1);
     else grid[row][col] = -1;
   };
 
-  setAdjacentNegativeOne = (row: number, col: number) => {
-    if (row > 0) this.setNegativeOne(row - 1, col);
-    if (row < 14) this.setNegativeOne(row + 1, col);
-    if (col > 0) this.setNegativeOne(row, col - 1);
-    if (col < 14) this.setNegativeOne(row, col + 1);
-    if (row > 0 && col > 0) this.setNegativeOne(row - 1, col - 1);
-    if (row > 0 && col < 14) this.setNegativeOne(row - 1, col + 1);
-    if (row < 14 && col > 0) this.setNegativeOne(row + 1, col - 1);
-    if (row < 14 && col < 14) this.setNegativeOne(row + 1, col + 1);
+  setAdjacentNegativeOne = (row: number, col: number, exceptions: string[]) => {
+    if (row > 0) this.setNegativeOne(row - 1, col, exceptions);
+    if (row < 14) this.setNegativeOne(row + 1, col, exceptions);
+    if (col > 0) this.setNegativeOne(row, col - 1, exceptions);
+    if (col < 14) this.setNegativeOne(row, col + 1, exceptions);
+    if (row > 0 && col > 0) this.setNegativeOne(row - 1, col - 1, exceptions);
+    if (row > 0 && col < 14) this.setNegativeOne(row - 1, col + 1, exceptions);
+    if (row < 14 && col > 0) this.setNegativeOne(row + 1, col - 1, exceptions);
+    if (row < 14 && col < 14) this.setNegativeOne(row + 1, col + 1, exceptions);
   };
 
-  progressGame = (row: number, col: number, bomb: Bomb, playing: Boolean) => {
-    const { grid, counter } = this.state;
+  checkAdjacentFlags = (row: number, col: number) => {
+    const { grid } = this.state;
+    const adjacentSquareIds = [
+      `${row - 1}-${col - 1}`,
+      `${row - 1}-${col}`,
+      `${row - 1}-${col + 1}`,
+      `${row}-${col - 1}`,
+      `${row}-${col + 1}`,
+      `${row + 1}-${col - 1}`,
+      `${row + 1}-${col}`,
+      `${row + 1}-${col + 1}`,
+    ];
+    // Get flagged squares
+    const flaggedSquares = document.getElementsByClassName('flag');
+    const flaggedSquareIds = Array.prototype.map.call(
+      flaggedSquares,
+      (square) => square.parentElement.id,
+    );
+    // Filter if parentElement id = one of the 8 values
+    const adjacentFlagged = flaggedSquareIds.length
+      ? Array.prototype.filter.call(flaggedSquareIds, (id) => {
+          return adjacentSquareIds.includes(id);
+        })
+      : '';
+    if (adjacentFlagged.length === grid[row][col][0])
+      try {
+        this.setAdjacentNegativeOne(row, col, adjacentFlagged);
+      } catch (error) {
+        console.log(error);
+      }
+    this.setState({ grid });
+  };
+
+  progressGame = (row: number, col: number, bomb: Bomb, playing: boolean) => {
+    const { grid, counter, bombClicked } = this.state;
+    const bombJustClicked = bomb[0] === b || bombClicked;
     if (bomb < 1 && grid[row][col] < 1) this.setAdjacentNegativeOne(row, col);
     counter.push('');
-    this.setState({ playing, grid, counter, lastContent: bomb });
+    this.setState({ playing, grid, counter, bombClicked: bombJustClicked });
   };
 
-  reset = () => {
+  reset = (row: number, col: number) => {
     this.setState({ grid: [] }, () => {
       this.setState(
         {
           grid: createBombGrid(15, 15),
           playing: true,
           counter: [],
-          lastContent: 0,
+          bombClicked: false,
         },
-        () => this.props.reset(),
+        () => {
+          this.props.reset();
+          if (row && col) document.getElementById(`${row}-${col}`).click();
+        },
       );
     });
   };
 
   setGameWin = () => {
     this.props.stop();
-    this.setState({ playing: false, lastContent: 'B' }, () =>
+    this.setState({ playing: false, bombClicked: true }, () =>
       this.setState({ counter: Array(1000000) }),
     );
   };
@@ -192,10 +234,12 @@ class Board extends Component {
         <Square
           board={this}
           bomb={grid[rowIndex][colIndex]}
+          checkAdjacentFlags={this.checkAdjacentFlags}
           column={colIndex}
           // eslint-disable-next-line react/no-array-index-key
           key={`${rowIndex}, ${colIndex}`}
           progressGame={this.progressGame}
+          reset={this.reset}
           row={rowIndex}
           {...{ start, stop }}
           {...boardState}

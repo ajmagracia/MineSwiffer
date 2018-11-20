@@ -8,11 +8,13 @@ export type Bomb = 0 | -1 | 'B' | BombNumber[];
 type Props = {
   board: Component,
   bomb: Bomb,
+  checkAdjacentFlags: Function,
   column: number,
   counter: ''[],
-  lastContent: Bomb,
+  bombClicked: boolean,
   playing: boolean,
   progressGame: Function,
+  reset: Function,
   row: number,
   start: Function,
   stop: Function,
@@ -28,10 +30,11 @@ class Square2 extends Component {
   };
 
   componentDidUpdate() {
-    const { bomb, lastContent } = this.props;
+    const { bomb, bombClicked } = this.props;
+    if (this.state.clickStatus === 'clicked') return;
     if (bomb > -1) return;
-    if (bomb === 'B' && lastContent !== 'B') return;
-    if (typeof bomb === 'object' && !bomb[1]) return;
+    if (bomb[0] === 'B' && !bombClicked && !bomb[1]) return;
+    if (bomb[0] && !bomb[0] > 0 && !bomb[1]) return;
     this.clickDiv.current.click();
   }
 
@@ -40,14 +43,14 @@ class Square2 extends Component {
   // This creates the HTML inside the wrapper div of each square
   createSquareHTML = () => {
     const { clickStatus, rightClicked, rightClickCounter } = this.state;
-    const { bomb } = this.props;
+    const { bomb, column, row } = this.props;
     let content;
     let innerDiv;
 
     // After a click
     if (clickStatus === 'clicked') {
-      content = bomb;
-      if (bomb === 'B') innerDiv = <div className="burst-8" />;
+      content = bomb[0];
+      if (bomb[0] === 'B') innerDiv = <div className="burst-8" />;
       else if (typeof bomb === 'number')
         innerDiv = <div className="unselectable" />;
       else innerDiv = <div className="unselectable"> {bomb[0]} </div>;
@@ -65,18 +68,17 @@ class Square2 extends Component {
       }
     }
 
-    // if (typeof bomb === 'object')
-    // bomb = bomb[0]
     // TODO: set undefined case to "" for production
     return (
       <div
         className={`square ${clickStatus} ${content}`}
+        id={`${row}-${column}`}
         onClick={this.handleClick}
         onContextMenu={this.handleRightClick}
         ref={this.clickDiv}
         role="presentation"
       >
-        {innerDiv === undefined ? '' : innerDiv}
+        {innerDiv === undefined ? bomb : innerDiv}
       </div>
     );
   };
@@ -89,24 +91,24 @@ class Square2 extends Component {
       counter,
       playing,
       progressGame,
+      reset,
       row,
       start,
       stop,
     } = this.props;
     let isPlaying = playing;
-    if (
-      clickStatus === 'clicked' ||
-      (playing === false && bomb !== 'B') ||
-      counter.length === 1000000
-    )
-      return;
+    if (!counter.length && bomb[0] === 'B') return reset(row, column);
+    if (clickStatus === 'clicked')
+      return this.props.checkAdjacentFlags(row, column);
+    if ((playing === false && bomb[0] !== 'B') || counter.length === 1000000)
+      return false;
     if (counter.length === 0) start();
-    if (bomb === 'B') {
+    if (bomb[0] === 'B') {
       isPlaying = false;
       stop();
     }
 
-    this.setState({ clickStatus: 'clicked', rightClicked: false }, () =>
+    return this.setState({ clickStatus: 'clicked', rightClicked: false }, () =>
       progressGame(row, column, bomb, isPlaying),
     );
   };
