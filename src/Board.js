@@ -102,6 +102,7 @@ const createBombGrid: GridCreator = (rowLength, colLength) => {
   return markAdjacentBombs(grid);
 };
 
+// TODO: Refactor to remove bombClicked state (use counter.join('') instead)
 // -----------------------------------------------------------------------------
 class Board extends Component {
   props: Props;
@@ -171,12 +172,19 @@ class Board extends Component {
     this.setState({ grid });
   };
 
-  progressGame = (row: number, col: number, bomb: Bomb, playing: boolean) => {
+  // TODO: Refactor to not rely on bombClicked state (based on counter)
+  progressGame = (row: number, col: number, bomb: Bomb) => {
     const { grid, counter, bombClicked } = this.state;
-    const bombJustClicked = bomb[0] === b || bombClicked;
+    // const bombJustClicked = bomb[0] === b || bombClicked;
+    const counterItem = bomb[0] === b ? b : '';
     if (bomb < 1 && grid[row][col] < 1) this.setAdjacentNegativeOne(row, col);
-    counter.push('');
-    this.setState({ playing, grid, counter, bombClicked: bombJustClicked });
+    counter.push(counterItem);
+    this.setState({
+      playing: !bombClicked,
+      grid,
+      counter,
+      bombClicked: !!counter.join('').length,
+    });
   };
 
   reset = (row: number, col: number) => {
